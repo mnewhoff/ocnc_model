@@ -1,0 +1,228 @@
+help ?0 
+ 
+// {xopen("$(NEURONHOME)/lib/hoc/noload.hoc")} 
+load_file("nrngui.hoc")
+//{load_proc("nrnmainmenu")} 
+load_file("electrod.hoc")
+load_file("pointman.hoc")
+
+/*{ 
+load_template("Electrode") 
+load_template("MenuExplore") 
+load_template("PointProcessLocator") 
+} 
+{ 
+load_template("Inserter") 
+load_template("PointProcessManager") 
+load_template("ShowMechanism") 
+} 
+*/
+PERIOD = 200
+STIMMAG = 1
+BRANCH_SEP = 60
+PROX_SEG_LENGTH = 240
+BRANCH_NUM = PROX_SEG_LENGTH/BRANCH_SEP
+nao0_na_ion = 110
+cao0_ca_ion = 1.8
+
+
+create soma 
+access soma 
+Ra = 200 
+L = 40 
+diam = 50 
+nseg = 2
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+ek = -68 
+ 
+ 
+create ant_branch[BRANCH_NUM+1],post_branch[BRANCH_NUM+1]
+
+for i = 1 ,(BRANCH_NUM) {
+ant_branch[i] { 
+Ra = 200
+L = 200 
+diam = 0.8 
+nseg = 4
+
+
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+ek = -68 
+}
+}
+
+for i = 1 , (BRANCH_NUM) {
+post_branch[i] { 
+Ra = 200
+L = 200 
+diam = 0.8 
+nseg = 4
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+ek = -68 
+}
+}
+ 
+create ax1a
+access ax1a 
+
+Ra = 200
+L = 4000 
+diam = 1.5 
+nseg = 20
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+nao = 110
+cao = 1.8
+ek = -68 
+
+create ax1b
+access ax1b 
+Ra = 200
+L = PROX_SEG_LENGTH 
+diam = 1.5
+nseg = 20
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+ek = -68 
+ 
+create ax3a
+access ax3a 
+Ra = 200
+// L = 800 
+L = 4000
+diam = 1.5 
+nseg = 20
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+ek = -68 
+
+create ax3b
+access ax3b 
+Ra = 200
+L = PROX_SEG_LENGTH 
+diam = 1.5
+nseg = 20
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+ek = -68 
+
+create ax2a
+access ax2a
+Ra = 200
+L = 200 
+diam = 10 
+nseg = 10
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+ek = -68 
+
+create ax2b
+access ax2b
+Ra = 200 
+L = 4000 
+diam = 10 
+nseg = 10 
+insert pcell 
+insert na 
+insert napump 
+insert gkca 
+insert ca 
+insert cach 
+insert capump 
+ek = -68 
+ 
+connect ax2a(1) ,soma(1)
+connect ax2b(1),ax2a(0) 
+connect ax1b(1),ax2a(0.5) 
+connect ax1a(1),ax1b(0)
+connect ax3b(1),ax2a(0.2) 
+connect ax3a(1),ax3b(0)
+for i = 1 , (BRANCH_NUM)  {
+connect ant_branch[i](1),ax1b(i/BRANCH_NUM) 
+connect post_branch[i](1),ax3b(i/BRANCH_NUM) 
+}
+
+objectvar STIM[1002]
+last_impulse = 0
+TAU = 21
+INIT_RATE = 12
+for num=1,1000 {
+   ax1a {
+      STIM[num] =  new IClamp(0)
+      rate = INIT_RATE * exp(-last_impulse/(TAU*1000)) 
+      STIM[num].del = (1/rate)*1000+last_impulse
+      last_impulse=(1/rate)*1000+last_impulse
+      STIM[num].dur = 5
+      STIM[num].amp = STIMMAG
+      if (last_impulse>20000) num = 1001
+        }
+}
+
+forall Ra = 200
+
+xopen ("pcell.ses")
+{
+xpanel("Axon Diameter",0)
+Thin_Diam = 1.5
+Thick_Diam = 10
+xvalue("Thin axon","Thin_Diam",1,"Change_Thin()",1,1)
+xvalue("Thick axon","Thick_Diam",1,"Change_Thick()",1,1)
+xpanel()
+}
+proc Change_Thin () {
+ax1a {diam =Thin_Diam}
+ax1b {diam = Thin_Diam}
+ax3a {diam =Thin_Diam}
+ax3b {diam = Thin_Diam}
+}
+proc Change_Thick () {
+ax2a {diam =Thick_Diam}
+ax2b {diam = Thick_Diam}
+
+}
+
+
+

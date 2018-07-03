@@ -1,0 +1,47 @@
+objectvar save_window_, rvp_
+objectvar scene_vector_[8]
+objectvar ocbox_, ocbox_list_, scene_, scene_list_
+{ocbox_list_ = new List()  scene_list_ = new List()}
+{
+save_window_ = new PlotShape(0)
+save_window_.size(-63.6251,4058.62,-65.7501,4056.5)
+save_window_.variable("v")
+scene_vector_[6] = save_window_
+{save_window_.view(-63.6251, -65.7501, 4122.25, 4122.25, 287, 220, 200.64, 200.32)}
+fast_flush_list.append(save_window_)
+save_window_.save_name("fast_flush_list.")
+}
+{
+save_window_ = new Graph(0)
+save_window_.size(-4161.11,138.889,-80,40)
+scene_vector_[7] = save_window_
+{save_window_.view(-4161.11, -80, 4300, 120, 611, 119, 300.48, 200.32)}
+flush_list.append(save_window_)
+save_window_.save_name("flush_list.")
+objectvar rvp_
+rvp_ = new RangeVarPlot("v")
+ax1a rvp_.begin(0)
+ax1b rvp_.end(1)
+rvp_.origin(130)
+save_window_.addobject(rvp_, 3, 1, 0.8, 0.9)
+objectvar rvp_
+rvp_ = new RangeVarPlot("v")
+ax2b rvp_.begin(0)
+ant_branch[4] rvp_.end(1)
+rvp_.origin(130)
+save_window_.addobject(rvp_, 4, 1, 0.8, 0.9)
+objectvar rvp_
+rvp_ = new RangeVarPlot("v")
+ax3a rvp_.begin(0)
+ant_branch[4] rvp_.end(1)
+rvp_.origin(138.889)
+save_window_.addobject(rvp_, 7, 1, 0.8, 0.9)
+save_window_.color(3)
+save_window_.label(0.1,.9,"Thin stimulated anterior axon ax1 (blue)")
+save_window_.color(4)
+save_window_.label(0.1,.8,"Thick axon ax2 (green)")
+save_window_.color(7)
+save_window_.label(0.1,.7,"Thin posterior axon ax3 (purple)")
+}
+objectvar scene_vector_[1]
+{doNotify()}

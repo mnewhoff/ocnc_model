@@ -1,0 +1,36 @@
+load_file("pcell.hoc")
+
+proc volt_space() {
+	load_file("volt_space.ses")
+}
+
+proc change_res() {
+	if (resolution) {
+		forall {nseg *=9}
+		tstop=800
+		steps_per_ms=5
+		dt=0.025
+	} else {
+		forall {nseg /=9}
+		tstop=800
+		steps_per_ms=.5
+		dt=0.05
+	}
+}
+
+proc fig6() {
+	//	tstop  = 14000
+	tstop  = 500
+	init()
+	run()
+}
+
+resolution = 0
+
+xpanel("Fig 6 or Voltage along processes",0)
+
+xbutton("Fig 6","fig6()")
+xbutton("Voltage Space Plot","volt_space()")
+xstatebutton("High Resolution",&resolution, "change_res()")
+
+xpanel()
