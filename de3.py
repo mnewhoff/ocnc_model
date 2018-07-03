@@ -1,14 +1,15 @@
 from neuron import h, gui
  
 h.load_file("nrngui.hoc")
-h.nao0_na_ion = 110
+h.nao0_na_ion = 115
 h.cao0_ca_ion = 1.8
+h.ko0_k_ion = 4
 
 soma = h.Section(name="soma")
 soma.Ra = 200 
 soma.L = 40 
-soma.diam = 50 
-soma.nseg = 2
+soma.diam = 40 
+soma.nseg = 1
 soma.insert("pcell") 
 soma.insert("na")
 soma.insert("napump") 
@@ -21,7 +22,7 @@ junction = h.Section(name="soma")
 junction.Ra = 200
 junction.L = 40
 junction.diam = 10
-junction.nseg = 2
+junction.nseg = 3
 junction.insert("pcell") 
 junction.insert("na")
 junction.insert("napump") 
@@ -34,7 +35,7 @@ axthick = h.Section(name="axthick")
 axthick.Ra = 200
 axthick.L = 150
 axthick.diam = 6
-axthick.nseg = 10
+axthick.nseg = 11
 axthick.insert("pcell") 
 axthick.insert("na")
 axthick.insert("napump") 
@@ -70,7 +71,7 @@ axthin.insert("cach")
 axthin.insert("capump") 
 
 for sec in h.allsec():
-  sec.ek = -68 
+  sec.ek = -71.5 #from Schlue and Deitmer, 1984 
 
 junction.connect(soma)
 axthick.connect(junction)
@@ -78,32 +79,36 @@ axsiz.connect(axthick)
 axthin.connect(axsiz)
 
 # Model changes for spike height
-soma.gnabar_pcell = 0
-junction.gnabar_pcell = 0
-axsiz.gnabar_pcell = .5*30
+soma.gnabar_pcell = 0 #zero sodium conductance at soma
+junction.gnabar_pcell = 0 #zero in junction b.w soma and axon
+axthick.gnabar_pcell = 0.15 #reduced by 50% in thick axon
+axsiz.gnabar_pcell = .5 #increase gNa at spike initiation zone
 
-axthick.gnabar_pcell = 0.15
+for sec in h.allsec(): #increase K activation rate in whole cell
+  sec.kactrate_pcell = 0.75 #from Schlue and Deitmer, 1984
 
-
-for sec in h.allsec():
-  sec.kactrate_pcell = 2
-
-soma.push()
+soma.push() #record voltage at the soma
 
 h.celsius = 20
 h.tstop = 300
 h.xopen("de3_1.ses")
 
-ic = h.IClamp(0.5, sec=axthick)
+ic = h.IClamp(0.5, sec=axthick) #current injection to axthick
 ic.delay = 100
 ic.dur = 300
-ic.amp = 0
+ic.amp = 0 #current amplitude
 
-vsoma = h.Vector()
-vaxsiz = h.Vector()
-T = h.Vector()
-vsoma.record(soma(0.5)._ref_v, 0.1)
-vaxsiz.record(axsiz(0.5)._ref_v, 0.1)
+#vectors to plot
+vsoma = h.Vector() #voltage in soma
+vaxsiz = h.Vector() #voltage in SIZ
+ina_axsiz = h.Vector() #Na current in SIZ 
+ik_axsiz = h.Vector() #K current in SIZ
+
+T = h.Vector() #time vector
+vsoma.record(soma(0.5)._ref_v, 0.1) #record from midpoint of soma
+vaxsiz.record(axsiz(0.5)._ref_v, 0.1) #record from midpoint of SIZ
+ina_axsiz.record(axsiz(0.5)._ref_ina, 0.1) #record 
+ik_axsiz.record(axsiz(0.5)._ref_ik, 0.1)
 T.record(h._ref_t, 0.1)
 
 h.init()
@@ -120,8 +125,8 @@ plt.title('V axsiz')
 
 plt.figure()
 plt.subplot(2,1,1)
-plt.plot(T, vsoma)
-plt.title('V soma')
+plt.plot(T, ina_axsiz) #plot Na current as a function of time
+plt.title('INa')
 plt.subplot(2,1,2)
-plt.plot(T, vaxsiz)
-plt.title('V axsiz')
+plt.plot(T, ik_axsiz) #plot K current as a 
+plt.title('IK')
