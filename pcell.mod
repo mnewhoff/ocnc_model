@@ -18,7 +18,7 @@ NEURON {
         USEION na READ ena WRITE ina
         USEION k READ ek WRITE ik
         NONSPECIFIC_CURRENT il
-        RANGE gnabar, gkbar, gl, el
+        RANGE gnabar, gkbar, gl, el, kactrate
         GLOBAL minf, hinf, ninf, mexp, hexp, nexp
 }
  
@@ -34,6 +34,7 @@ PARAMETER {
         ek = -68 (mV)
         gl = .0005 (mho/cm2)
         el = -49 (mV)
+        kactrate = 1
 }
  
 STATE {
@@ -91,7 +92,7 @@ FROM -100 TO 100 WITH 200
         hinf = alpha/sum
         hexp = 1 - exp(tinc*sum)
                 :"n" potassium activation system
-        alpha = .024*vtrap(-(v-17),8) 
+        alpha = kactrate*.024*vtrap(-(v-17),8) 
         beta = 0.2*exp(-(v+48)/35)
         sum = alpha + beta
         ninf = alpha/sum
