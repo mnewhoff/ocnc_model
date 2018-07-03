@@ -1,8 +1,8 @@
 from neuron import h, gui
  
 h.load_file("nrngui.hoc")
-#h.nao0_na_ion = 110
-#h.cao0_ca_ion = 1.8
+h.nao0_na_ion = 110
+h.cao0_ca_ion = 1.8
 
 soma = h.Section(name="soma")
 soma.Ra = 200 
@@ -67,9 +67,9 @@ soma.push()
 
 h.celsius = 20
 h.tstop = 300
-#h.xopen("de3_1.ses")
+h.xopen("de3_1.ses")
 
-ic = h.IClamp(0.5, sec=soma)
+ic = h.IClamp(0.5, sec=axthick)
 ic.delay = 100
 ic.dur = 300
 ic.amp = 1
