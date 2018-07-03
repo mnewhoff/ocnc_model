@@ -80,7 +80,7 @@ axthin.connect(axsiz)
 # Model changes for spike height
 soma.gnabar_pcell = 0
 junction.gnabar_pcell = 0
-axsiz.gnabar_pcell = .5
+axsiz.gnabar_pcell = .5*30
 
 axthick.gnabar_pcell = 0.15
 
@@ -97,7 +97,31 @@ h.xopen("de3_1.ses")
 ic = h.IClamp(0.5, sec=axthick)
 ic.delay = 100
 ic.dur = 300
-ic.amp = 1
+ic.amp = 0
+
+vsoma = h.Vector()
+vaxsiz = h.Vector()
+T = h.Vector()
+vsoma.record(soma(0.5)._ref_v, 0.1)
+vaxsiz.record(axsiz(0.5)._ref_v, 0.1)
+T.record(h._ref_t, 0.1)
 
 h.init()
 h.run()
+
+import matplotlib.pyplot as plt
+plt.figure()
+plt.subplot(2,1,1)
+plt.plot(T, vsoma)
+plt.title('V soma')
+plt.subplot(2,1,2)
+plt.plot(T, vaxsiz)
+plt.title('V axsiz')
+
+plt.figure()
+plt.subplot(2,1,1)
+plt.plot(T, vsoma)
+plt.title('V soma')
+plt.subplot(2,1,2)
+plt.plot(T, vaxsiz)
+plt.title('V axsiz')
