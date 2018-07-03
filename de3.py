@@ -43,6 +43,19 @@ axthick.insert("ca")
 axthick.insert("cach") 
 axthick.insert("capump") 
 
+axsiz = h.Section(name="axsiz")
+axsiz.Ra = 200
+axsiz.L = 10
+axsiz.diam = 2
+axsiz.nseg = 1
+axsiz.insert("pcell") 
+axsiz.insert("na")
+axsiz.insert("napump") 
+axsiz.insert("gkca")
+axsiz.insert("ca")
+axsiz.insert("cach") 
+axsiz.insert("capump") 
+
 axthin = h.Section(name="axthin")
 axthin.Ra = 200
 axthin.L = 500
@@ -61,7 +74,19 @@ for sec in h.allsec():
 
 junction.connect(soma)
 axthick.connect(junction)
-axthin.connect(axthick)
+axsiz.connect(axthick)
+axthin.connect(axsiz)
+
+# Model changes for spike height
+soma.gnabar_pcell = 0
+junction.gnabar_pcell = 0
+axsiz.gnabar_pcell = .5
+
+axthick.gnabar_pcell = 0.15
+
+
+for sec in h.allsec():
+  sec.kactrate_pcell = 2
 
 soma.push()
 
@@ -74,4 +99,5 @@ ic.delay = 100
 ic.dur = 300
 ic.amp = 1
 
-
+h.init()
+h.run()
