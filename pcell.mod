@@ -93,7 +93,7 @@ FROM -100 TO 100 WITH 200
         hexp = 1 - exp(tinc*sum)
                 :"n" potassium activation system
         alpha = kactrate*.024*vtrap(-(v-17),8) 
-        beta = 0.2*exp(-(v+48)/35)
+        beta = 0.3*exp(-(v+48)/35)
         sum = alpha + beta
         ninf = alpha/sum
         nexp = 1 - exp(tinc*sum)

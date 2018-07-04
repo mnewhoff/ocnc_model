@@ -13,7 +13,7 @@ soma.nseg = 1
 soma.insert("pcell") 
 soma.insert("na")
 soma.insert("napump") 
-soma.insert("gkca")
+#soma.insert("gkca")
 soma.insert("ca")
 soma.insert("cach") 
 soma.insert("capump") 
@@ -26,7 +26,7 @@ junction.nseg = 3
 junction.insert("pcell") 
 junction.insert("na")
 junction.insert("napump") 
-junction.insert("gkca")
+#junction.insert("gkca")
 junction.insert("ca")
 junction.insert("cach") 
 junction.insert("capump") 
@@ -39,7 +39,7 @@ axthick.nseg = 11
 axthick.insert("pcell") 
 axthick.insert("na")
 axthick.insert("napump") 
-axthick.insert("gkca")
+#axthick.insert("gkca")
 axthick.insert("ca")
 axthick.insert("cach") 
 axthick.insert("capump") 
@@ -52,7 +52,7 @@ axsiz.nseg = 1
 axsiz.insert("pcell") 
 axsiz.insert("na")
 axsiz.insert("napump") 
-axsiz.insert("gkca")
+#axsiz.insert("gkca")
 axsiz.insert("ca")
 axsiz.insert("cach") 
 axsiz.insert("capump") 
@@ -65,7 +65,7 @@ axthin.nseg = 30
 axthin.insert("pcell") 
 axthin.insert("na")
 axthin.insert("napump") 
-axthin.insert("gkca")
+#axthin.insert("gkca")
 axthin.insert("ca")
 axthin.insert("cach") 
 axthin.insert("capump") 
@@ -85,18 +85,18 @@ axthick.gnabar_pcell = 0.15 #reduced by 50% in thick axon
 axsiz.gnabar_pcell = .5 #increase gNa at spike initiation zone
 
 for sec in h.allsec(): #increase K activation rate in whole cell
-  sec.kactrate_pcell = 0.75 #from Schlue and Deitmer, 1984
+  sec.kactrate_pcell = 0.75 #0.75 from P cell, Schlue and Deitmer, 1984
 
 soma.push() #record voltage at the soma
 
-h.celsius = 20
+h.celsius = 22 #typical lab temperature
 h.tstop = 300
 h.xopen("de3_1.ses")
 
 ic = h.IClamp(0.5, sec=axthick) #current injection to axthick
 ic.delay = 100
 ic.dur = 300
-ic.amp = 0 #current amplitude
+ic.amp = 0.5 #current amplitude
 
 #vectors to plot
 vsoma = h.Vector() #voltage in soma
