@@ -80,20 +80,20 @@ FROM -100 TO 100 WITH 200
         q10 = 2.3^((celsius - 20)/10)
         tinc = -dt * q10
                 :"m" sodium activation system
-        alpha = .03 * vtrap(-(v+28),15)
+        alpha = .06 * vtrap(-(v+28),15)
         beta =  2.7 * exp(-(v+53)/18)
         sum = alpha + beta
         minf = alpha/sum
         mexp = 1 - exp(tinc*sum)
                 :"h" sodium inactivation system
-        alpha = .045 * exp(-(v+58)/18)
+        alpha = .065 * exp(-(v+58)/18)
         beta = 0.72 / (exp(-(v+23)/14) + 1)
         sum = alpha + beta
         hinf = alpha/sum
         hexp = 1 - exp(tinc*sum)
                 :"n" potassium activation system
         alpha = kactrate*.024*vtrap(-(v-17),8) 
-        beta = 0.3*exp(-(v+48)/35)
+        beta = 0.5*exp(-(v+48)/35)
         sum = alpha + beta
         ninf = alpha/sum
         nexp = 1 - exp(tinc*sum)

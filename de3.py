@@ -85,7 +85,7 @@ axthick.gnabar_pcell = 0.15 #reduced by 50% in thick axon
 axsiz.gnabar_pcell = .5 #increase gNa at spike initiation zone
 
 for sec in h.allsec(): #increase K activation rate in whole cell
-  sec.kactrate_pcell = 0.75 #0.75 from P cell, Schlue and Deitmer, 1984
+  sec.kactrate_pcell = 30.75 #0.75 from P cell, Schlue and Deitmer, 1984
 
 soma.push() #record voltage at the soma
 
@@ -96,7 +96,7 @@ h.xopen("de3_1.ses")
 ic = h.IClamp(0.5, sec=axthick) #current injection to axthick
 ic.delay = 100
 ic.dur = 300
-ic.amp = 0.5 #current amplitude
+ic.amp = 0 #current amplitude
 
 #vectors to plot
 vsoma = h.Vector() #voltage in soma

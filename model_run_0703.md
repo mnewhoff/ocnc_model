@@ -46,6 +46,21 @@ soma { nseg=2  L=40  Ra=200
     1. Try completely turning it off, `soma.gnabar_pcell=0`: Mesured spike hight reduced to ~15 mV.
     2. Further eliminate/reduce Na conductance in junction and axthick
 
-3. Spontaneous spiking
+
+## Steps to make the DE-3 model more motoneuron-like and less sensory neuron-like
+1. Remove Ca-activated K conductance and replace with IA K conductance as seen in AP cells
+* From Stewart et al., 1989
+    * Inactivation time constant 26 ±
+  2 ms
+    * Activation time constant similar to Retz, 
+2. Sodium activation adjustment --> spontaneous firing
+* alpha = .06 * vtrap(-(v+28),15) (was 0.03) 
+3. Na activation system
+* alpha = .065 * exp(-(v+58)/18) (was 0.035)
+4. Speed up K activation to truncate spike waveform
+* kactrate from 0.75 --> 30.75 in .py file
+5. Speed up K inactivation rate to prevent huge AHP
+* k beta = 0.5*exp(-(v+48)/35) (was 0.3)
+
 
 
