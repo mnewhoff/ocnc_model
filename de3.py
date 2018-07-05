@@ -90,13 +90,13 @@ for sec in h.allsec(): #increase K activation rate in whole cell
 # Add a bit of the Ornstein-Uhlenbeck noise (colored noise) everywhere
 for sec in h.allsec():
   sec.insert("OU")
-  sec.tau_OU = 5
-  sec.D_OU = 0.05 
+  sec.tau_OU = 20
+  sec.D_OU = 0.025 
 
 soma.push() #record voltage at the soma
 
 h.celsius = 22 #typical lab temperature
-h.tstop = 300
+h.tstop = 31000
 h.xopen("de3_1.ses")
 
 ic = h.IClamp(0.5, sec=axthick) #current injection to axthick
@@ -104,11 +104,10 @@ ic.delay = 100
 ic.dur = 300
 ic.amp = 0 #current amplitude
 
-
-
 soma.insert("uschan")
 soma.onset_uschan = 100
-soma.dur_uschan = 100
+soma.dur_uschan = 30000
+soma.tact_uschan = 20000
 
 #vectors to plot
 vsoma = h.Vector() #voltage in soma

@@ -7,7 +7,7 @@ ENDCOMMENT
 
 NEURON {
 	SUFFIX uschan
-	RANGE onset, dur, n, gkbar
+	RANGE onset, dur, n, gkbar, tact, tdeact
 	USEION k READ ek WRITE ik
 }
 
@@ -23,6 +23,9 @@ PARAMETER {
 	celsius = 20 (degC)
 	gkbar = .01 (mho/cm2)
 	ek = -68 (mV)
+	dt (ms)
+	tact = 10000 (ms)
+	tdeact = 10000 (ms)
 }
 
 STATE {
@@ -38,14 +41,17 @@ INITIAL {
 }
 
 BREAKPOINT {
+	LOCAL tinc, nexp
 	at_time(onset)
 	at_time(onset+dur)
 
 	if (t < onset + dur && t >= onset) {
-		n = 1
-	}else{
-		n = 0
+	   n = 1-exp(-(t-onset)/tact)
+	} else {
+	    tinc = -dt/tdeact
+		nexp = 1 - exp(tinc)
+		n = n - nexp*n
 	}
-	
+
 	ik = gkbar*n*(v - ek)
 }
