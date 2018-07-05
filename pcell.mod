@@ -86,7 +86,7 @@ FROM -100 TO 100 WITH 200
         minf = alpha/sum
         mexp = 1 - exp(tinc*sum)
                 :"h" sodium inactivation system
-        alpha = .065 * exp(-(v+58)/18)
+        alpha = .160 * exp(-(v+58)/18)
         beta = 0.72 / (exp(-(v+23)/14) + 1)
         sum = alpha + beta
         hinf = alpha/sum

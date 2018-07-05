@@ -34,7 +34,7 @@ steps_per_ms = 40
 xvalue("Points plotted/ms","steps_per_ms", 1,"setdt()", 0, 1 )
 screen_update_invl = 0.05
 xvalue("Scrn update invl","screen_update_invl", 1,"", 0, 1 )
-realtime = 1.59
+realtime = 1.53
 xvalue("Real Time","realtime", 0,"", 0, 1 )
 xpanel(5,111)
 }

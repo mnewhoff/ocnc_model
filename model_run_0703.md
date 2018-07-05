@@ -61,6 +61,7 @@ soma { nseg=2  L=40  Ra=200
 * kactrate from 0.75 --> 30.75 in .py file
 5. Speed up K inactivation rate to prevent huge AHP
 * k beta = 0.5*exp(-(v+48)/35) (was 0.3)
-
+6. Attempt to further truncate waveform by speeding up Na inactivation rate in pcell.mod
+* alpha = .160 * exp(-(v+58)/18) (was 0.095)
 
 
