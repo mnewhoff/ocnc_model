@@ -87,6 +87,12 @@ axsiz.gnabar_pcell = .5 #increase gNa at spike initiation zone
 for sec in h.allsec(): #increase K activation rate in whole cell
   sec.kactrate_pcell = 90.75 #0.75 from P cell, Schlue and Deitmer, 1984
 
+# Add a bit of the Ornstein-Uhlenbeck noise (colored noise) everywhere
+for sec in h.allsec():
+  sec.insert("OU")
+  sec.tau_OU = 5
+  sec.D_OU = 0.05 
+
 soma.push() #record voltage at the soma
 
 h.celsius = 22 #typical lab temperature
@@ -97,6 +103,12 @@ ic = h.IClamp(0.5, sec=axthick) #current injection to axthick
 ic.delay = 100
 ic.dur = 300
 ic.amp = 0 #current amplitude
+
+
+
+soma.insert("uschan")
+soma.onset_uschan = 100
+soma.dur_uschan = 100
 
 #vectors to plot
 vsoma = h.Vector() #voltage in soma
