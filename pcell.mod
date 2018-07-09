@@ -28,11 +28,11 @@ PARAMETER {
         v (mV)
         celsius = 20 (degC)
         dt (ms)
-        gnabar = .35 (mho/cm2)
+        gnabar = .25 (mho/cm2)
         ena = 60 (mV)
         gkbar = .006 (mho/cm2)
         ek = -68 (mV)
-        gl = .0005 (mho/cm2)
+        gl = .0008 (mho/cm2)
         el = -49 (mV)
         kactrate = 1
 }
@@ -80,20 +80,20 @@ FROM -100 TO 100 WITH 200
         q10 = 2.3^((celsius - 20)/10)
         tinc = -dt * q10
                 :"m" sodium activation system
-        alpha = .06 * vtrap(-(v+28),15)
+        alpha = .035 * vtrap(-(v+28),15)
         beta =  2.7 * exp(-(v+53)/18)
         sum = alpha + beta
         minf = alpha/sum
         mexp = 1 - exp(tinc*sum)
                 :"h" sodium inactivation system
-        alpha = .160 * exp(-(v+58)/18)
+        alpha = .180 * exp(-(v+58)/18)
         beta = 0.72 / (exp(-(v+23)/14) + 1)
         sum = alpha + beta
         hinf = alpha/sum
         hexp = 1 - exp(tinc*sum)
                 :"n" potassium activation system
         alpha = kactrate*.024*vtrap(-(v-17),8) 
-        beta = 0.5*exp(-(v+48)/35)
+        beta = 0.85*exp(-(v+48)/35)
         sum = alpha + beta
         ninf = alpha/sum
         nexp = 1 - exp(tinc*sum)

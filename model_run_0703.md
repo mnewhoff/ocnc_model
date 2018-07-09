@@ -60,8 +60,47 @@ soma { nseg=2  L=40  Ra=200
 4. Speed up K activation to truncate spike waveform
 * kactrate from 0.75 --> 30.75 in .py file
 5. Speed up K inactivation rate to prevent huge AHP
-* k beta = 0.5*exp(-(v+48)/35) (was 0.3)
+* k beta = 0.75*exp(-(v+48)/35) (was 0.3)
 6. Attempt to further truncate waveform by speeding up Na inactivation rate in pcell.mod
-* alpha = .160 * exp(-(v+58)/18) (was 0.095)
+* alpha = .180 * exp(-(v+58)/18) (was 0.095)
+
+## Changes 7/5/18
+1. Added Ornstein-Uhlenbeck noise to better mimic biological system
+* OU term incorporated (ou.mod)
+2. Added "mechanosensitive channel" USchan
+
+## Changes 7/6-7/18
+1. Incorporate neurites to better mimic DE-3 morphology
+
+
+
+2. Incorporate synaptic inputs to get (small) PSPs
+
+
+3. Continue to attempt to lower spike amplitude
+* again increase Na inactivation rate
+* 
+
+4. Reduce baseline firing rate (lower Na activation rate?)
+* reduced Na alpha = .035 * vtrap(-(v+28),15) (was 0.06)
+	* now down to ~1Hz firing rate = target
+* increased gl = .0008 (mho/cm2) (was 0.0005)
+
+5. Increased .Ra from 200 to 300 in all sections
+
+## Goals for 7/8/18
+1. Play with temperature
+2. Try to find Q10s for conductance parameters
+* Q10 for Na, K
+
+
+## When things go boring...
+![Cat Karate](cat_karate.jpeg)
+
+![In case of fire...](In_case_of_fire_git_push_first.jpg)
+
+
+
+
 
 
