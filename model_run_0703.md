@@ -93,6 +93,15 @@ soma { nseg=2  L=40  Ra=200
 2. Try to find Q10s for conductance parameters
 * Q10 for Na, K
 
+## Temperature manipulation
+1. Convert temperature from global to range variable; able to set to different temps in different secs
+* "celsius" global variable now "localtemp" range variable
+* directions on https://www.neuron.yale.edu/phpBB/viewtopic.php?t=2107
+
+2. Want to introduce "events"
+
+
+
 
 ## When things go boring...
 ![Cat Karate](cat_karate.jpeg)

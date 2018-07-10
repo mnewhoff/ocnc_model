@@ -5,6 +5,7 @@ h.nao0_na_ion = 115
 h.cao0_ca_ion = 1.8
 h.ko0_k_ion = 4
 
+
 ##------------------------------------------------------------------##
 ##----------------------Create passive sections---------------------##
 soma = h.Section(name="soma")
@@ -133,6 +134,9 @@ for sec in h.allsec():
   sec.ek = -71.5 #from Schlue and Deitmer, 1984
   sec.ena = 45 #from De Schutter et al., 1993
 
+for sec in h.allsec():
+  sec.localtemp_pcell = 22
+
 ##----------------------------------------------------------------##
 ##--------------Connections between sections----------------------##
 
@@ -165,7 +169,6 @@ junction.gnabar_pcell = 0 #zero in junction b.w soma and axon
 axthick.gnabar_pcell = 0.15 #reduced by 50% in thick axon
 axsiz.gnabar_pcell = .5 #increase gNa at spike initiation zone
 
-
 for sec in h.allsec(): #increase K activation rate in whole cell
   sec.kactrate_pcell = 100.75 #0.75 from P cell, Schlue and Deitmer, 1984
 
@@ -180,7 +183,7 @@ for sec in h.allsec():
 ##------------------------Recording conditions---------------------##
 soma.push() #record voltage at the soma
 
-h.celsius = 22 #typical lab temperature
+#h.celsius = 22 #typical lab temperature
 h.tstop = 5000
 h.xopen("de3_1.ses")
 

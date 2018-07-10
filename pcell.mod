@@ -3,7 +3,7 @@ TITLE pcell.mod   squid sodium, potassium, and leak channels
 COMMENT
  Initialize this mechanism to steady-state voltage by calling
   rates_gsquid(v) from HOC, then setting m_gsquid=minf_gsquid, etc.
- Remember to set celsius=6.3 (or whatever) in your HOC file.
+ Remember to set localtemp=6.3 (or whatever) in your HOC file.
  See hh1.hoc for an example of a simulation using this model.
  SW Jaslove  6 March, 1992
 ENDCOMMENT
@@ -18,7 +18,7 @@ NEURON {
         USEION na READ ena WRITE ina
         USEION k READ ek WRITE ik
         NONSPECIFIC_CURRENT il
-        RANGE gnabar, gkbar, gl, el, kactrate
+        RANGE localtemp, gnabar, gkbar, gl, el, kactrate
         GLOBAL minf, hinf, ninf, mexp, hexp, nexp
 }
  
@@ -26,7 +26,6 @@ INDEPENDENT {t FROM 0 TO 1 WITH 1 (ms)}
  
 PARAMETER {
         v (mV)
-        celsius = 20 (degC)
         dt (ms)
         gnabar = .25 (mho/cm2)
         ena = 60 (mV)
@@ -45,6 +44,7 @@ ASSIGNED {
         ina (mA/cm2)
         ik (mA/cm2)
         il (mA/cm2)
+        localtemp (degC)
         minf hinf ninf mexp hexp nexp 
 }
  
@@ -75,9 +75,9 @@ PROCEDURE rates(v) {:Computes rate and o
          : Call once from HOC to 
          : initialize inf at resting v.
      LOCAL  q10, tinc, alpha, beta, sum
-     TABLE minf, mexp, hinf, hexp, ninf, nexp             DEPEND dt, celsius
+     TABLE minf, mexp, hinf, hexp, ninf, nexp             DEPEND dt, localtemp
 FROM -100 TO 100 WITH 200
-        q10 = 2.3^((celsius - 20)/10)
+        q10 = 2.3^((localtemp - 20)/10)
         tinc = -dt * q10
                 :"m" sodium activation system
         alpha = .035 * vtrap(-(v+28),15)
