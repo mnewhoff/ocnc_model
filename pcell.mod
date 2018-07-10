@@ -18,7 +18,7 @@ NEURON {
         USEION na READ ena WRITE ina
         USEION k READ ek WRITE ik
         NONSPECIFIC_CURRENT il
-        RANGE localtemp, gnabar, gkbar, gl, el, kactrate
+        RANGE localtemp, gnabar, gkbar, gl, el, kactrate, nainactrate
         GLOBAL minf, hinf, ninf, mexp, hexp, nexp
 }
  
@@ -33,7 +33,8 @@ PARAMETER {
         ek = -68 (mV)
         gl = .0008 (mho/cm2)
         el = -49 (mV)
-        kactrate = 1
+        kactrate = 100
+        nainactrate = 0.18
 }
  
 STATE {
@@ -86,7 +87,7 @@ FROM -100 TO 100 WITH 200
         minf = alpha/sum
         mexp = 1 - exp(tinc*sum)
                 :"h" sodium inactivation system
-        alpha = .180 * exp(-(v+58)/18)
+        alpha = nainactrate * exp(-(v+58)/18)
         beta = 0.72 / (exp(-(v+23)/14) + 1)
         sum = alpha + beta
         hinf = alpha/sum

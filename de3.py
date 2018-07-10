@@ -37,7 +37,7 @@ axthick.insert("pcell")
 axsiz = h.Section(name="axsiz") #spike initiation zone
 axsiz.Ra = 300
 axsiz.L = 10
-axsiz.diam = 2
+axsiz.diam = 10
 axsiz.nseg = 1
 axsiz.insert("pcell") 
 
@@ -51,15 +51,18 @@ axthin.insert("pcell")
 ##------------------------------------------------------------------##
 ##--------------------------add dendrites---------------------------##
 
-#add 6 med-length dendrites to soma-junction connection
+#add 9 med-length dendrites to soma-junction connection
 sna = h.Section(name='sna')
 snb = h.Section(name='snb')
 snc = h.Section(name='snc')
 snd = h.Section(name='snd')
 sne = h.Section(name='sne')
 snf = h.Section(name='snf')
+sng = h.Section(name='sng')
+snh = h.Section(name='snh')
+sni = h.Section(name='sni')
 
-soma_neurites = [sna,snb,snc,snd,sne,snf]
+soma_neurites = [sna,snb,snc,snd,sne,snf,sng,snh,sni]
 for n in soma_neurites:
   n.Ra = 300
   n.L = 80
@@ -67,15 +70,19 @@ for n in soma_neurites:
   n.nseg = 3
   n.insert("pcell")
   n.connect(soma(1))
-  n.insert('pas')
+  #n.insert('pas')
 
-#add 4 shorter neurites to junction
+#add 8 shorter neurites to junction
 jna = h.Section(name='jna')
 jnb = h.Section(name='jnb')
 jnc = h.Section(name='jnc')
 jnd = h.Section(name='jnd')
+jne = h.Section(name='jne')
+jnf = h.Section(name='jnf')
+jng = h.Section(name='jng')
+jnh = h.Section(name='jnh')
 
-junction_neurites = [jna,jnb,jnc,jnd]
+junction_neurites = [jna,jnb,jnc,jnd,jne,jnf,jng,jnh]
 for n in junction_neurites:
   n.Ra = 300
   n.L = 50
@@ -83,7 +90,7 @@ for n in junction_neurites:
   n.nseg = 3
   n.insert("pcell")
   n.connect(junction(0.5))
-  n.insert('pas')
+  #n.insert('pas')
 
 #add 6 XL dendrites to axthick
 axna = h.Section(name='axna')
@@ -101,7 +108,7 @@ for n in axthick_neurites:
   n.nseg = 11
   n.insert("pcell")
   n.connect(axthick(0.5))
-  n.insert('pas')
+  #n.insert('pas')
 
 #added small branches to axna neurite
 axba = h.Section(name='axba')
@@ -118,7 +125,7 @@ for n in axna_branches:
   n.nseg = 5
   n.insert("pcell")
   n.connect(axna(0.5))
-  n.insert('pas')
+  #n.insert('pas')
 
 ##---------------------------------------------------------------##
 ##---------Introduce common channels to active segments----------##
@@ -134,7 +141,7 @@ for sec in h.allsec():
   sec.ek = -71.5 #from Schlue and Deitmer, 1984
   sec.ena = 45 #from De Schutter et al., 1993
 
-for sec in h.allsec():
+for sec in h.allsec(): #can now set different temperatures in different sections
   sec.localtemp_pcell = 22
 
 ##----------------------------------------------------------------##
@@ -146,19 +153,14 @@ axsiz.connect(axthick)
 axthin.connect(axsiz)
 
 ##-----------------------------------------------------------------##
-##-----------------Insert a few synapses for fun-------------------##
+##------Insert a randomish synaptic input to up firing rate--------##
 
-asyn1 = h.AlphaSynapse(axna(0.5)) #onto first neurite off axthick
-asyn1.onset = 20
-asyn1.gmax = 1
-
-asyn2 = h.AlphaSynapse(axne(0.5)) #onto fifth neurite off axthick
-asyn2.onset = 100
-asyn2.gmax = 1
-
-asyn3 = h.AlphaSynapse(jnc(0.5)) #onto third neurite off junction
-asyn3.onset = 500
-asyn3.gmax = 1
+syn1=h.NetStim(axna(0))
+nc=h.NetCon(None,syn1)
+syn1.start = 0
+syn1.interval = 500
+syn1.noise = 0.5
+nc.weight[0] = 100
 
 ##-----------------------------------------------------------------##
 ##------------Conductances to alter for spike amplitude------------##
@@ -167,7 +169,8 @@ asyn3.gmax = 1
 soma.gnabar_pcell = 0 #zero sodium conductance at soma
 junction.gnabar_pcell = 0 #zero in junction b.w soma and axon
 axthick.gnabar_pcell = 0.15 #reduced by 50% in thick axon
-axsiz.gnabar_pcell = .5 #increase gNa at spike initiation zone
+axsiz.gnabar_pcell = 1.8 #increase gNa at spike initiation zone
+nainactrate_pcell = 0.58
 
 for sec in h.allsec(): #increase K activation rate in whole cell
   sec.kactrate_pcell = 100.75 #0.75 from P cell, Schlue and Deitmer, 1984
@@ -176,7 +179,7 @@ for sec in h.allsec(): #increase K activation rate in whole cell
 ##----Add a bit of the Ornstein-Uhlenbeck noise (colored noise)----## 
 for sec in h.allsec():
   sec.insert("OU")
-  sec.tau_OU = 20
+  sec.tau_OU = 20 #seems to reduce noise if increase
   sec.D_OU = 0.025 
 
 ##-----------------------------------------------------------------##
@@ -189,7 +192,7 @@ h.xopen("de3_1.ses")
 
 ic = h.IClamp(0.5, sec=axthick) #current injection to axthick w/ electrode if want
 ic.delay = 100
-ic.dur = 300
+ic.dur = 10000
 ic.amp = 0 #current amplitude
 
 ##-----------------------------------------------------------------##
@@ -198,8 +201,7 @@ soma.insert("uschan")
 soma.onset_uschan = 5000 #US time on
 soma.dur_uschan = 10000 #duration of US stimulus
 soma.tact_uschan = 20000 # tau activation US-activated channel
-
-##-----------------------------------------------------------------##
+##--------------------------------------------------------------##
 ##--------------------------Graphs---------------------------------##
 #vectors to plot
 vsoma = h.Vector() #voltage in soma
@@ -213,6 +215,10 @@ vaxsiz.record(axsiz(0.5)._ref_v, 0.1) #record from midpoint of SIZ
 ina_axsiz.record(axsiz(0.5)._ref_ina, 0.1) #record 
 ik_axsiz.record(axsiz(0.5)._ref_ik, 0.1)
 T.record(h._ref_t, 0.1)
+
+
+
+
 
 h.init()
 h.run()
