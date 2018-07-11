@@ -19,8 +19,8 @@ soma.insert("pcell")
 junction = h.Section(name="junction")
 junction.Ra = 300
 junction.L = 40
-junction.diam = 10
-junction.nseg = 3
+junction.diam = 7
+junction.nseg = 5
 junction.insert("pcell") 
 #junction.insert('pas')
 
@@ -192,8 +192,8 @@ h.xopen("de3_1.ses")
 
 ic = h.IClamp(0.5, sec=axthick) #current injection to axthick w/ electrode if want
 ic.delay = 100
-ic.dur = 10000
-ic.amp = 0 #current amplitude
+ic.dur = 25000
+ic.amp = 0.5 #current amplitude
 
 ##-----------------------------------------------------------------##
 ##--------------------US-activated channel-------------------------##
@@ -202,12 +202,33 @@ soma.onset_uschan = 5000 #US time on
 soma.dur_uschan = 10000 #duration of US stimulus
 soma.tact_uschan = 20000 # tau activation US-activated channel
 ##--------------------------------------------------------------##
-##--------------------------Graphs---------------------------------##
+
+##----Local temperature fluctuation ----##
+def make_vector_linear_increase(length, init=22.0, target=24.5):
+  vtemp = h.Vector(length)
+  slope = (target-init)/(length-1)
+  for i in range(length):
+    vtemp.x[i] = i*slope + init
+  return vtemp
+
+dt = 1
+L = 1000 #int(h.tstop/dt)
+vtemp = make_vector_linear_increase(L, init=22.0, target=24.5)
+
+# vtemp.play(soma(0.5)._ref_localtemp_pcell, dt)
+for seg in soma.allseg():
+  vtemp.play(seg._ref_localtemp_pcell, dt)        
+
+vtemp.play(axthin(0.1)._ref_localtemp_pcell, dt)
+
+
+##--------------------------Graphs------------------------------##
 #vectors to plot
 vsoma = h.Vector() #voltage in soma
 vaxsiz = h.Vector() #voltage in SIZ
 ina_axsiz = h.Vector() #Na current in SIZ 
 ik_axsiz = h.Vector() #K current in SIZ
+#somatemp = h.Vector()
 
 T = h.Vector() #time vector
 vsoma.record(soma(0.5)._ref_v, 0.1) #record from midpoint of soma
@@ -215,10 +236,22 @@ vaxsiz.record(axsiz(0.5)._ref_v, 0.1) #record from midpoint of SIZ
 ina_axsiz.record(axsiz(0.5)._ref_ina, 0.1) #record 
 ik_axsiz.record(axsiz(0.5)._ref_ik, 0.1)
 T.record(h._ref_t, 0.1)
+#somatemp.record(&soma.localtemp_pcell,0.1)
 
+##------------------------------------------------------------------##
+##-------------------Change temperature as event--------------------##
+def heat_change():
+  soma.localtemp_pcell = 100
 
+#fih = h.FInitializeHandler(2,heat_change)
 
-
+#
+# fih = f.FInitializeHandler(500,heat_change)
+# h.finitialize(-45)
+#
+# fih = f.FInitializeHandler(500,heat_change)
+# h.CVode().event(500,heat_change)
+#h.continuerun(15000)
 
 h.init()
 h.run()
@@ -231,11 +264,14 @@ plt.title('V soma')
 plt.subplot(2,1,2)
 plt.plot(T, vaxsiz)
 plt.title('V axsiz')
+#plt.plot(T,localtemp_soma)
+#plt.title('Temperature at Soma')
+
 
 plt.figure()
 plt.subplot(2,1,1)
 plt.plot(T, ina_axsiz) #plot Na current as a function of time
 plt.title('INa')
 plt.subplot(2,1,2)
-plt.plot(T, ik_axsiz) #plot K current as a 
+plt.plot(T, ik_axsiz) #plot K current as a function of time
 plt.title('IK')

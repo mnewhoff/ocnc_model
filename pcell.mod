@@ -35,6 +35,7 @@ PARAMETER {
         el = -49 (mV)
         kactrate = 100
         nainactrate = 0.18
+        localtemp = 22 (degC)
 }
  
 STATE {
@@ -45,7 +46,6 @@ ASSIGNED {
         ina (mA/cm2)
         ik (mA/cm2)
         il (mA/cm2)
-        localtemp (degC)
         minf hinf ninf mexp hexp nexp 
 }
  
